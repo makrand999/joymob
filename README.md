@@ -132,6 +132,38 @@ without the driver):
 cmake -S . -B build -DJOYMB_WITH_VIGEM=OFF
 ```
 
+## Build the Windows .exe from Linux (MinGW cross-compile)
+
+No Windows machine needed — and no Wine for *building* (Wine only runs
+Windows programs; the compiler here is MinGW-w64, which emits a real
+Windows `.exe` directly). The ViGEm code path is included, so this replaces
+the MSVC build above for releases:
+
+```sh
+apt install g++-mingw-w64-x86-64   # Debian/Ubuntu (needs posix-thread variant, the default)
+cmake -S . -B build-win --toolchain cmake/mingw-w64-x86_64.cmake \
+  -DCMAKE_BUILD_TYPE=Release
+cmake --build build-win --config Release
+# -> build-win/joymb-server.exe
+```
+
+The exe is self-contained (libgcc/libstdc++ statically linked; only stock
+system DLLs — KERNEL32, msvcrt, SETUPAPI, WS2_32 — are imported). Two
+MinGW-only accommodations live in-repo: `cmake/mingw-compat/` header shims
+(ViGEmClient spells them `<Windows.h>`/`<SetupAPI.h>`, unresolvable on
+case-sensitive filesystems) and the toolchain file; MSVC builds never see
+them.
+
+To smoke-test the exe on Linux, run it under Wine (HTTP + registry work;
+pads report inactive since there is no ViGEmBus driver — same as a
+driverless Windows box):
+
+```sh
+wine build-win/joymb-server.exe 8080 ./web 127.0.0.1
+curl -X POST 127.0.0.1:8080/api/register \
+  -H "Content-Type: application/json" -d '{"device_name":"wine-test"}'
+```
+
 ## Build (Linux, for logic/endpoint dev)
 
 ```sh

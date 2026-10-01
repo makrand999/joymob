@@ -4,6 +4,16 @@
 
 #include "vigem_pad.h"
 
+// ViGEm/Common.h uses Windows base types (BYTE, USHORT, ...) without
+// including windows.h itself; upstream .cpp does it first, so must we.
+#ifndef WIN32_LEAN_AND_MEAN
+#define WIN32_LEAN_AND_MEAN
+#endif
+#ifndef NOMINMAX
+#define NOMINMAX
+#endif
+#include <windows.h>
+
 #include <ViGEm/Client.h>
 
 std::mutex ViGEmVirtualPad::shared_mutex_;

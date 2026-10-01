@@ -50,6 +50,11 @@ if(WIN32 AND JOYMB_WITH_VIGEM)
   add_library(vigemclient STATIC ${vigemclient_SOURCE_DIR}/src/ViGEmClient.cpp)
   target_include_directories(vigemclient PUBLIC ${vigemclient_SOURCE_DIR}/include)
   target_link_libraries(vigemclient PUBLIC setupapi)
+  if(MINGW)
+    # ViGEmClient uses capitalized <Windows.h>/<SetupAPI.h>, unresolvable on
+    # case-sensitive Linux filesystems. Shims redirect to real headers.
+    target_include_directories(vigemclient PRIVATE ${CMAKE_SOURCE_DIR}/cmake/mingw-compat)
+  endif()
   if(MSVC)
     # ViGEmClient is warning-noisy; don't let /W4 fail our build for it.
     target_compile_options(vigemclient PRIVATE /W1)
@@ -93,13 +98,20 @@ else()
   target_compile_options(joymb-server PRIVATE -Wall -Wextra)
 endif()
 
+if(MINGW)
+  # Single-file exe: no libgcc/libstdc++ DLLs to ship alongside it.
+  target_link_options(joymb-server PRIVATE -static-libgcc -static-libstdc++)
+endif()
+
 # Guards for Windows-only code live behind `#ifdef _WIN32` in sources,
 # so this target also compiles on Linux for logic/endpoint development.
 
 include(CTest)
 if(BUILD_TESTING)
-  add_test(NAME smoke
-    COMMAND ${CMAKE_SOURCE_DIR}/tests/smoke.sh $<TARGET_FILE:joymb-server> 18081 ${CMAKE_SOURCE_DIR}/web)
+  if(NOT CMAKE_CROSSCOMPILING)
+    add_test(NAME smoke
+      COMMAND ${CMAKE_SOURCE_DIR}/tests/smoke.sh $<TARGET_FILE:joymb-server> 18081 ${CMAKE_SOURCE_DIR}/web)
+  endif()
   add_test(NAME web-tests
     COMMAND node --test "${CMAKE_SOURCE_DIR}/web/tests/*.test.js" "${CMAKE_SOURCE_DIR}/game/ball/tests/*.test.mjs")
 endif()
