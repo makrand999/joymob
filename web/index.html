@@ -1,0 +1,104 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<title>joymb controller</title>
+<!-- Bump ?v= on CSS/JS edits so phones drop the cached copy. -->
+<link rel="stylesheet" href="app.css?v=7">
+</head>
+<body>
+
+<!-- Connect screen -->
+<div id="connect-screen">
+  <div class="card">
+    <h1>JOYMB</h1>
+    <p class="sub">Phone-as-controller for PC</p>
+    <label>Server
+      <input id="server-url" inputmode="url" autocomplete="off" spellcheck="false">
+    </label>
+    <label>Name
+      <input id="device-name" autocomplete="off" maxlength="24" placeholder="Pixel 8">
+    </label>
+    <button id="connect-btn" type="button">Connect</button>
+    <p id="connect-status" role="status"></p>
+  </div>
+</div>
+
+<!-- Controller HUD -->
+<div id="hud" hidden>
+  <div id="stick-zone"></div>
+  <div id="look-zone"></div>
+  <div id="stick-base" hidden><div id="stick-knob"></div></div>
+  <div id="buttons"></div>
+  <div id="topbar">
+    <span id="conn-dot"></span><span id="conn-text">…</span>
+    <span class="spacer"></span>
+    <button id="settings-btn" type="button" aria-label="Settings">
+      <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round">
+        <line x1="2" y1="4" x2="14" y2="4"/><circle cx="6" cy="4" r="2" fill="#1a1e24"/>
+        <line x1="2" y1="9" x2="14" y2="9"/><circle cx="10.5" cy="9" r="2" fill="#1a1e24"/>
+        <line x1="2" y1="14" x2="14" y2="14"/><circle cx="5" cy="14" r="2" fill="#1a1e24"/>
+      </svg>
+    </button>
+    <button id="fs-btn" type="button" aria-label="Fullscreen">
+      <svg id="fs-expand" width="15" height="15" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M2 6V2h4M10 2h4v4M14 10v4h-4M6 14H2v-4"/>
+      </svg>
+      <svg id="fs-compress" width="15" height="15" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" hidden>
+        <path d="M6 2H2v4M14 6V2h-4M10 14h4v-4M2 10v4h4"/>
+      </svg>
+    </button>
+    <button id="quit-btn" type="button" aria-label="Disconnect">×</button>
+  </div>
+  <div id="settings-panel" hidden>
+    <div id="settings-menu">
+      <button id="menu-sens-btn" type="button">Sensitivity</button>
+      <button id="menu-hud-btn" type="button">Custom HUD</button>
+      <button id="settings-close-btn" type="button">Close</button>
+    </div>
+    <div id="sens-view" hidden>
+      <div class="row"><span>Look sensitivity</span>
+        <input id="sens-slider" type="range" min="0.3" max="2.5" step="0.1" value="1">
+        <b id="sens-val">1.0</b>
+      </div>
+      <div class="row"><span>Joystick size</span>
+        <input id="stick-slider" type="range" min="40" max="110" step="2" value="62">
+        <b id="stick-val">62</b>
+      </div>
+      <div class="row btns">
+        <button id="sens-back-btn" type="button">Back</button>
+        <button id="sens-done-btn" type="button">Done</button>
+      </div>
+    </div>
+    <div id="hud-view" hidden>
+      <div class="row"><span>Button size</span>
+        <input id="size-slider" type="range" min="56" max="120" step="2" value="76">
+        <b id="size-val">76</b>
+      </div>
+      <div class="row addrow">
+        <input id="new-label" maxlength="6" placeholder="LBL" autocomplete="off">
+        <select id="new-action"></select>
+        <button id="add-btn" type="button">Add</button>
+      </div>
+      <div class="row btns">
+        <button id="delete-btn" type="button">Delete</button>
+        <button id="reset-layout-btn" type="button">Reset</button>
+      </div>
+      <div class="row btns">
+        <button id="hud-back-btn" type="button">Back</button>
+        <button id="hud-done-btn" type="button">Done</button>
+      </div>
+      <p class="hint">Drag buttons to move. Tap one, then resize or delete (custom only). Reset restores defaults.</p>
+    </div>
+  </div>
+  <div id="rotate-hint">Rotate to landscape for the full HUD</div>
+</div>
+
+<script src="controls.js?v=7"></script>
+<script src="app.js?v=7"></script>
+</body>
+</html>

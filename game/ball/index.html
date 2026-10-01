@@ -1,0 +1,26 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>joymb ball test</title>
+<link rel="stylesheet" href="style.css?v=5">
+<script type="importmap">
+{
+  "imports": {
+    "three": "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js"
+  }
+}
+</script>
+</head>
+<body>
+<canvas id="scene"></canvas>
+<div id="overlay">
+  <div id="driver">waiting for controller…</div>
+  <div id="readout"></div>
+  <div id="help">Left stick moves · right stick orbits camera · JUMP (A) hops. Drive it from a phone at <b>/joymob/</b>.</div>
+</div>
+<div id="nogl" hidden>WebGL unavailable — try another browser.</div>
+<script type="module" src="game.js?v=5"></script>
+</body>
+</html>
