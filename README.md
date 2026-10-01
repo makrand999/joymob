@@ -240,3 +240,26 @@ Notes:
   status view (no GUI framework).
 - A device whose pad failed to create (no driver) stays registered with
   `"active": false` and input returns 503; the console logs a hint.
+
+## Roadmap — future scope (contributors welcome!)
+
+**Headline idea: stream the game screen to the phones.** Today each phone
+is a controller; tomorrow it can also be a personal viewer — game video
+rendered behind the touch HUD, cloud-gaming style, one page, no extra app.
+The design is worked out and waiting for hands:
+
+- **Pipeline:** DXGI Desktop Duplication capture → hardware H.264 encode
+  (NVENC/QuickSync/AMF) **once** → broadcast over WebSocket → browser
+  `WebCodecs` hardware decode to a canvas under the HUD.
+- **Why it scales:** encode cost is flat (all 4 phones share one stream);
+  only bandwidth grows, and 720p30 at ~2–4 Mbps per viewer is trivial for
+  a LAN. Resolution ladders (720p/480p) keep it tunable per phone.
+- **Concretely up for grabs:** capture module, encoder integration
+  (FFmpeg libs or MediaFoundation), WS signaling + NAL framing, the
+  WebCodecs client renderer, per-phone quality selection, latency tuning.
+
+Other directions we'd love help with: a mouse-injection backend so the
+finger-look deltas drive real mouse-look in PC games (today they drive the
+ball rig), per-game HUD profiles, and a GitHub Actions build for the
+Windows `.exe`. Open an issue with your angle — the codebase is small and
+approachable on purpose.
